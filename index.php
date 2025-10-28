@@ -1,11 +1,15 @@
 <?php
 
+$hashed = null;
+$inputError = null;
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
   $password = cleanValue($_POST["password"]);
 
   if (!empty($password)) {
     $hashed = password_hash($password, PASSWORD_DEFAULT);
+    $password = "";
   } else {
     $inputError = "No password was given";
   }
@@ -24,9 +28,19 @@ function cleanValue($value)
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PHP Hasher</title>
+  <title>PHP - Hasher</title>
   <link rel="shortcut icon" href="icon.svg" type="image/svg+xml">
   <style>
+    :root {
+      --color: #000;
+      --bg: #fff;
+    }
+
+    .dark {
+      --color: #fff;
+      --bg: #0c0c0d;
+    }
+
     html {
       box-sizing: border-box;
       font-size: 62.5%;
@@ -52,6 +66,8 @@ function cleanValue($value)
       font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
       /* Improve text rendering */
       -webkit-font-smoothing: antialiased;
+      color: var(--color);
+      background-color: var(--bg);
     }
 
     /* Improve media defaults */
@@ -96,9 +112,10 @@ function cleanValue($value)
           position: absolute;
           top: -2rem;
           left: 1rem;
-          color: black;
+          color: inherit;
           font-style: normal;
           transition: top 0.3s ease-in-out, left 0.3s ease-in-out;
+          transform: translateY(-50%);
         }
 
         input {
@@ -123,8 +140,9 @@ function cleanValue($value)
             +label {
               top: -2rem;
               left: 1rem;
-              color: black;
+              color: inherit;
               font-style: normal;
+              transform: translateY(-50%);
             }
           }
         }
@@ -168,6 +186,31 @@ function cleanValue($value)
           width: 1.8rem;
           aspect-ratio: 1;
           fill: white;
+        }
+      }
+    }
+
+    .dark form {
+      fieldset {
+        input {
+          background-color: inherit;
+          color: white;
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          border-right: none;
+
+          &:focus {
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-right: none;
+          }
+        }
+      }
+
+      button {
+        background-color: rgba(255, 255, 255, 0.15);
+
+        &:focus,
+        &:hover {
+          background-color: rgba(255, 255, 255, 0.1);
         }
       }
     }
@@ -246,6 +289,32 @@ function cleanValue($value)
       }
     }
 
+    .dark section {
+      div {
+        p {
+          background-color: rgba(211, 211, 211, 0.1);
+          border: none;
+
+          &:hover {
+            background-color: rgba(211, 211, 211, 0.15);
+          }
+        }
+
+        button {
+          border: none;
+          background-color: rgba(211, 211, 211, 0.1);
+
+          &:hover {
+            background-color: rgba(211, 211, 211, 0.15);
+          }
+
+          svg {
+            fill: white;
+          }
+        }
+      }
+    }
+
     .toast {
       padding: 0.4rem 0.8rem;
       width: fit-content;
@@ -268,6 +337,18 @@ function cleanValue($value)
       }
     }
 
+    .dark .toast {
+      color: #9de09d;
+      background-color: #1e611e;
+      border: none;
+
+      &:hover {
+        color: #9de09d;
+        background-color: #1e611e;
+        border: none;
+      }
+    }
+
     @keyframes fadeIn {
       0% {
         opacity: 0;
@@ -280,6 +361,80 @@ function cleanValue($value)
 
       100% {
         opacity: 0;
+      }
+    }
+
+    footer {
+      padding: 1rem 4rem;
+      width: 90%;
+      max-width: 40rem;
+      position: fixed;
+      bottom: 2rem;
+      left: 50%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 4rem;
+      border-radius: 100rem;
+      border: 1px solid rgba(0, 0, 0, 0.12);
+      transform: translateX(-50%);
+
+      h2 {
+        font-size: 1.4rem;
+        font-weight: 300;
+        color: inherit;
+
+        &:hover {
+          text-decoration: underline;
+        }
+
+        a {
+          color: inherit;
+          text-decoration: none;
+        }
+      }
+
+      div {
+        display: flex;
+        gap: 0.6rem;
+
+        button {
+          padding: 0.4rem;
+          width: 2.8rem;
+          aspect-ratio: 1;
+          background-color: inherit;
+          border: 1px solid rgba(0, 0, 0, 0.12);
+          border-radius: 0.8rem;
+
+          &.active {
+            background-color: rgba(0, 0, 0, 0.12);
+          }
+
+          &:hover {
+            background-color: rgba(211, 211, 211, 0.6);
+            border: 1px solid transparent;
+          }
+        }
+      }
+    }
+
+    .dark {
+      footer {
+        border: 1px solid rgba(255, 255, 255, 0.12);
+
+        div {
+          button {
+            border: 1px solid rgba(255, 255, 255, 0.12);
+
+            &.active {
+              background-color: rgba(255, 255, 255, 0.2);
+            }
+
+            svg {
+              fill: white;
+            }
+          }
+        }
       }
     }
   </style>
@@ -323,13 +478,94 @@ function cleanValue($value)
     </section>
   <?php endif; ?>
 
+  <footer>
+    <h2>
+      <a href="https://github.com/NibboNi/php-passwordhash">Repo</a>
+    </h2>
+
+    <div>
+      <button type="button" data-theme="light" aria-label="Enable light mode">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+          <title>Enable light mode</title>
+          <path d="M3.55 19.09L4.96 20.5L6.76 18.71L5.34 17.29M12 6C8.69 6 6 8.69 6 12S8.69 18 12 18 18 15.31 18 12C18 8.68 15.31 6 12 6M20 13H23V11H20M17.24 18.71L19.04 20.5L20.45 19.09L18.66 17.29M20.45 5L19.04 3.6L17.24 5.39L18.66 6.81M13 1H11V4H13M6.76 5.39L4.96 3.6L3.55 5L5.34 6.81L6.76 5.39M1 13H4V11H1M13 20H11V23H13" />
+        </svg>
+      </button>
+      <button type="button" data-theme="dark" aria-label="Enable dark mode">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+          <title>Enable dark mode</title>
+          <path d="M12 2A9.91 9.91 0 0 0 9 2.46A10 10 0 0 1 9 21.54A10 10 0 1 0 12 2Z" />
+        </svg>
+      </button>
+      <button type="button" data-theme="system" aria-label="Enable system mode">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+          <title>Enable system mode</title>
+          <path d="M21,16H3V4H21M21,2H3C1.89,2 1,2.89 1,4V16A2,2 0 0,0 3,18H10V20H8V22H16V20H14V18H21A2,2 0 0,0 23,16V4C23,2.89 22.1,2 21,2Z" />
+        </svg>
+      </button>
+    </div>
+  </footer>
+
   <script>
+    const themeBtns = document.querySelectorAll("[data-theme]");
+
+    window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => applyTheme());
+
+    setTheme();
+
+    themeBtns.forEach(btn => {
+      if (localStorage.getItem("theme") === btn.dataset.theme) {
+        btn.classList.add("active");
+      }
+
+      btn.addEventListener("click", () => {
+        themeBtns.forEach(btn => btn.classList.remove("active"));
+
+        if (localStorage.getItem("theme") !== btn.dataset.theme) {
+          changeTheme(btn.dataset.theme);
+        }
+
+        btn.classList.add("active");
+      })
+    });
+
     const hashed = document.querySelector("#hashed");
     const copyBtn = document.querySelector("#copyBtn");
 
     if (hashed && copyBtn) {
       copyBtn.addEventListener("click", () => copyToClipboard(hashed.textContent))
       hashed.addEventListener("click", () => copyToClipboard(hashed.textContent))
+    }
+
+    function setTheme() {
+      if (!localStorage.getItem("theme")) {
+        const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+
+        if (prefersDark) {
+          localStorage.setItem("theme", "dark");
+        } else {
+          localStorage.setItem("theme", "light");
+        }
+      }
+
+      applyTheme();
+
+    }
+
+    function applyTheme() {
+      const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+      const theme = localStorage.getItem("theme");
+
+      if ((theme === "system" && prefersDark) || theme === "dark") {
+        document.documentElement.classList.add("dark")
+      } else if (document.documentElement.classList.contains("dark")) {
+        document.documentElement.classList.remove("dark")
+      }
+    }
+
+    function changeTheme(theme) {
+      localStorage.setItem("theme", theme);
+
+      applyTheme();
     }
 
     async function copyToClipboard(text) {
